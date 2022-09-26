@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     ivel: DataTypes.STRING
   }, {
     sequelize,
+    paranoid: true,
     modelName: 'Niveis',
   });
   return Niveis;

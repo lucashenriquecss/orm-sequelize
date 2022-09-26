@@ -2,9 +2,18 @@ const database = require('../models')
 
 
 class PessoaControllers{
+    static  listarPessoasAtivas = async (req,res) => {
+      try {
+          const pessoasAtivas = await database.Pessoas.findAll()  
+          return res.status(200).json(pessoasAtivas)
+        
+      } catch (error) {
+          return res.status(500).send({message: `${err.message}  - Falha ao encontrar pessoas`})
+      }
+  }
     static  listarPessoas = async (req,res) => {
         try {
-            const todasAsPessoas = await database.Pessoas.findAll()  
+            const todasAsPessoas = await database.Pessoas.scope('todos').findAll()  
             return res.status(200).json(todasAsPessoas)
             
         } catch (error) {
@@ -52,6 +61,15 @@ class PessoaControllers{
         } catch (error) {
             return res.status(500).send({message: `${err.message}  - Falha ao criar Pessoa`})
         }
+    }
+    static restauraPessoa = async (req, res) => {
+      const{ id } = req.params
+      try {
+        await database.Pessoas.restore({where: {id:Number(id)}})
+        return res.status(200).json({messagem:`restaurado`})      
+      } catch (error) {
+        return res.status(500).send({message: `${err.message}  - Falha ao restaurar Pessoa`})
+      }
     }
     static async pegaUmaMatricula(req, res) {
         const { estudanteId, matriculaId } = req.params
